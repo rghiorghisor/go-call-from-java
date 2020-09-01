@@ -36,12 +36,11 @@ public class GoCaller {
 			libExtension = "dylib";			
 		}
 
-		String pwd = System.getProperty("user.dir");
-		System.out.println(pwd);
+		String pwd = System.getProperty("user.dir");		
 		String lib = pwd + "/bin/main." + libExtension;		
 		nativeLibrary = (NativeLibrary) Native.load(lib, NativeLibrary.class);
 	}
-	
+
 	/**
 	 * Retrieves the addition result of the two values.
 	 * 
@@ -52,7 +51,7 @@ public class GoCaller {
 	public long Add(long x, long y) {		
 		return nativeLibrary.Add(x, y);
 	}	
-	
+
 	/**
 	 * Sorts the given array in place.
 	 * 
@@ -63,20 +62,20 @@ public class GoCaller {
 		if (size < 2) {
 			return;
 		}
-		
+
 		Pointer pointer = new Memory(size * Native.getNativeSize(Long.TYPE));
 		pointer.write(0, arr, 0, size);
-		
+
 		NativeLibrary.Slice.ByValue slice = new NativeLibrary.Slice.ByValue();
 		slice.data = pointer;
-        slice.len = size;
-        slice.cap = size;
-		
-        nativeLibrary.Sort(slice);
-           
-        pointer.read(0, arr, 0, size);      
+		slice.len = size;
+		slice.cap = size;
+
+		nativeLibrary.Sort(slice);
+
+		pointer.read(0, arr, 0, size);      
 	}
-	
+
 
 	/**
 	 * Main method.
@@ -87,13 +86,13 @@ public class GoCaller {
 		GoCaller caller = new GoCaller();
 
 		System.out.println("[Java] Trying to call Go for Add...");		
-		long sum = caller.Add(10, 92);		
+		long sum = caller.Add(10, 93);		
 		System.out.println("[Java] Got result for Add: " + sum);
 
 		System.out.println("[Java] Trying to call Go for Sort...");
 		long[] arr = new long[]{3, 4, 1, 5, 2};
 		System.out.println("[Java] Array to Sort: " + Arrays.toString(arr));
-		
+
 		caller.Sort(arr);		
 		System.out.println("[Java] Got result for Add: " + Arrays.toString(arr));}
 }
@@ -102,21 +101,21 @@ public class GoCaller {
  * Defines the functionality of a native Go library.
  */
 interface NativeLibrary extends Library {
-	
+
 	/**
 	 * A wrapper over the Go Slice that contains a pointer to the data.
 	 */
 	@Structure.FieldOrder({"data", "len", "cap"})
 	public class Slice extends Structure {
-		
-        public static class ByValue extends Slice implements Structure.ByValue {}
-        
-        public Pointer data;
-        
-        public long len;
-        
-        public long cap;        
-    }
+
+		public static class ByValue extends Slice implements Structure.ByValue {}
+
+		public Pointer data;
+
+		public long len;
+
+		public long cap;        
+	}
 
 	/**
 	 * Retrieves the addition result of the two values.

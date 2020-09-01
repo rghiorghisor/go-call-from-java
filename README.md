@@ -1,4 +1,4 @@
-# Call go from Java
+# Call Go from Java
 
 This repo contains a simple and straightforward example on **How to call Go functions from Java**.
 
